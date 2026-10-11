@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container center">
+
+        <h3>Register Student</h3>
+
+        <input id="studentName" placeholder="Student Name">
+        <input id="studentId" placeholder="Student ID"><br>
+        <!-- Excel opeartion-->
+        <form id="uploadForm">
+            <input type="file" name="file" id="file" accept=".xls,.xlsx" required>
+            <button type="submit">Upload</button>
+        </form>
+
+        <div id="result"></div>
+
+        <button onclick="addStudent()">Add</button>
+        <button class="red" onclick="location.href='admin.html'">Back</button>
+
+    </div>
+
+</body>
+
+</html>
+
+
+
+<script>
+    // Upload Form Script
+    const form = document.getElementById("uploadForm");
+
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const file = document.getElementById("file").files[0];
+
+        // Check if a file is selected
+        if (!file) {
+            document.getElementById("result").innerHTML =
+                "<span style='color:red'>Please select an Excel file</span>";
+            return;
+        }
+
+        // Get year and department from localStorage
+        const year = localStorage.getItem("year");
+        const department = localStorage.getItem("department");
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("year", year);
+        formData.append("department", department);
+
+        try {
+            const response = await fetch(`${BASE_URL}/students/upload`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                document.getElementById("result").innerHTML =
+                    "<span style='color:green'>Upload Successful</span>";
+            } else {
+                document.getElementById("result").innerHTML =
+                    `<span style='color:red'>${data.message || "Upload Failed"}</span>`;
+            }
+        } catch (err) {
+            console.error(err);
+            document.getElementById("result").innerHTML =
+                "<span style='color:red'>Upload failed. Please try again.</span>";
+        }
+    });
+    // Add student function (for registering a student)
+    async function addStudent() {
+        const studentName = document.getElementById("studentName").value;
+        const studentId = document.getElementById("studentId").value;
+
+        if (!studentName || !studentId) {
+            alert("Please fill all fields");
+            return;
+        }
+
+        if (!token) {
+            alert("No token found! Please log in.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${BASE_URL}/students/register`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    studentName: studentName,  // Send studentName in the request body
+                    studentId: studentId,      // Send studentId in the request body
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Student Registered Successfully");
+                document.getElementById("studentName").value = "";
+                document.getElementById("studentId").value = "";
+            } else {
+                alert(data.message || "Registration Failed");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Server Error");
+        }
+    }
+
+</script>

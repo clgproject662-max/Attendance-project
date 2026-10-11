@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance Report</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- SheetJS library for Excel export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+
+<body>
+
+    <header class="header">
+        <img src="img/logo.png" alt="Logo" class="logo">
+        <h2 class="center" style="padding-left: 35%;">College Attendance System</h2>
+    </header>
+
+    <div class="container">
+
+        <h3 class="center">Attendance Report</h3>
+
+        <div class="report-filter-bar center">
+            <div class="filter-group">
+                <label for="reportDepartment">Department:</label>
+                <select id="reportDepartment" required>
+                    <option value="" disabled selected>Select Department</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Information Technology">Information Technology</option>
+                    <option value="Tamil">Tamil</option>
+                    <option value="English">English</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="reportYear">Year:</label>
+                <select id="reportYear" required>
+                    <option value="" disabled selected>Select Year</option>
+                    <option value="1">1st Year</option>
+                    <option value="2">2nd Year</option>
+                    <option value="3">3rd Year</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="fromDate">From:</label>
+                <input type="date" id="fromDate">
+            </div>
+
+            <div class="filter-group">
+                <label for="toDate">To:</label>
+                <input type="date" id="toDate">
+            </div>
+
+            <div class="filter-actions">
+                <button onclick="generateReport()">Generate</button>
+                <button class="purple" onclick="viewStudentData()" title="View uploaded students for this class">Student Data</button>
+                <button class="green" onclick="downloadReport()">Download Excel</button>
+                <button class="red" id="btnDeleteClass" onclick="deleteClassData()" title="Delete all students and data for selected Department and Year">Delete Students</button>
+            </div>
+        </div>
+
+        <div id="reportSummary" class="center"></div>
+
+        <table>
+            <thead id="reportHead">
+                <tr>
+                    <th>Serial</th>
+                    <th>Register No</th>
+                    <th>Name</th>
+                    <th>Total Days</th>
+                    <th>Present</th>
+                    <th>Absent</th>
+                    <th>%</th>
+                </tr>
+            </thead>
+            <tbody id="reportBody"></tbody>
+        </table>
+
+        <br>
+        <div class="center">
+            <button onclick="location.href='admin.html'">Back</button>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

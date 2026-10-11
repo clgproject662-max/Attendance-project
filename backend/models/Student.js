@@ -1,0 +1,44 @@
+const mongoose = require('mongoose');
+
+const studentSchema = new mongoose.Schema(
+    {
+        studentName: {
+            type: String,
+            required: [true, 'Student name is required'],
+            trim: true
+        },
+        studentId: {
+            type: String,
+            required: [true, 'Student register number/ID is required'],
+            trim: true,
+            uppercase: true
+        },
+        serial: {
+            type: Number,
+            default: 1
+        },
+        department: {
+            type: String,
+            required: [true, 'Department is required'],
+            trim: true
+        },
+        year: {
+            type: String,
+            required: [true, 'Year is required'],
+            trim: true
+        },
+        status: {
+            type: String,
+            enum: ['active', 'inactive'],
+            default: 'active'
+        }
+    },
+    {
+        timestamps: true
+    }
+);
+
+// Prevent duplicate studentId in the same department and year
+studentSchema.index({ studentId: 1, department: 1, year: 1 }, { unique: true });
+
+module.exports = mongoose.model('Student', studentSchema);
